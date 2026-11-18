@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     refresh_token_days: int = 7
 
     database_path: Path = BASE_DIR / "data" / "app.db"
+    database_url: str | None = None  # PostgreSQL/Neon in serverless production
     model_path: Path = BASE_DIR / "artifacts" / "model.pkl"
     metadata_path: Path = BASE_DIR / "artifacts" / "model_metadata.json"
 

@@ -2,3 +2,4 @@
 data/app.db
 __pycache__/
 .pytest_cache/
+venv/

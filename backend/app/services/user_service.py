@@ -10,24 +10,27 @@ from app.db import get_conn
 log = logging.getLogger("app.users")
 
 
-def get_user(username: str) -> Optional[sqlite3.Row]:
+def get_user(username: str) -> Optional[object]:
     with get_conn() as c:
         return c.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
 
 
-def list_users() -> list[sqlite3.Row]:
+def list_users() -> list[object]:
     with get_conn() as c:
         return c.execute("SELECT id, username, role, is_active FROM users ORDER BY id").fetchall()
 
 
-def create_user(username: str, password: str, role: str = "user") -> sqlite3.Row:
+def create_user(username: str, password: str, role: str = "user") -> object:
     if len(password) < 10:
         raise ValueError("Password must have at least 10 characters")
     with get_conn() as c:
         try:
             c.execute("INSERT INTO users (username, password_hash, role) VALUES (?,?,?)",
                       (username, hash_password(password), role))
-        except sqlite3.IntegrityError as e:
+        except Exception as e:
+            import psycopg.errors
+            if not isinstance(e, (sqlite3.IntegrityError, psycopg.errors.UniqueViolation)):
+                raise
             raise ValueError("Username already exists") from e
     log.info("user created username=%s role=%s", username, role)
     return get_user(username)  # type: ignore[return-value]
@@ -46,7 +49,7 @@ def set_password(username: str, password: str) -> bool:
                          (hash_password(password), username)).rowcount > 0
 
 
-def authenticate(username: str, password: str) -> Optional[sqlite3.Row]:
+def authenticate(username: str, password: str) -> Optional[object]:
     user = get_user(username)
     ok = verify_password(password, user["password_hash"] if user else None)
     if user and ok and user["is_active"]:
@@ -57,7 +60,17 @@ def authenticate(username: str, password: str) -> Optional[sqlite3.Row]:
 def revoke_token(jti: str, exp: int) -> None:
     with get_conn() as c:
         c.execute("DELETE FROM revoked_tokens WHERE expires_at < ?", (int(time.time()),))
-        c.execute("INSERT OR IGNORE INTO revoked_tokens (jti, expires_at) VALUES (?,?)", (jti, exp))
+        if get_settings().database_url:
+            c.execute(
+                "INSERT INTO revoked_tokens (jti, expires_at) VALUES (?,?) "
+                "ON CONFLICT (jti) DO NOTHING",
+                (jti, exp),
+            )
+        else:
+            c.execute(
+                "INSERT OR IGNORE INTO revoked_tokens (jti, expires_at) VALUES (?,?)",
+                (jti, exp),
+            )
 
 
 def is_revoked(jti: str) -> bool:
@@ -71,7 +84,8 @@ def bootstrap_admin() -> None:
     if not (s.admin_username and s.admin_password):
         return
     with get_conn() as c:
-        n = c.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+        row = c.execute("SELECT COUNT(*) AS count FROM users").fetchone()
+        n = row["count"] if isinstance(row, dict) else row[0]
     if n == 0:
         create_user(s.admin_username, s.admin_password, "admin")
         log.warning("Bootstrap admin '%s' created. Remove ADMIN_PASSWORD from the environment now.", s.admin_username)

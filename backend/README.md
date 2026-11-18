@@ -105,3 +105,10 @@ The mobile app contains **no secret** - only the server URL; each person logs in
 5. Back up the `api_data` volume (SQLite). Run a single API replica with SQLite (the login throttle is in-memory);
    for several replicas move users to PostgreSQL and the throttle to Redis.
 6. Build the app with `--dart-define=API_BASE_URL=https://api.example.com`.
+
+### Vercel
+
+For Vercel serverless deployment, use the `backend` directory as the Vercel root and
+follow [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md). Set `DATABASE_URL` to a managed
+PostgreSQL/Neon database; SQLite is intentionally retained only for local development
+because Vercel function storage is ephemeral.
