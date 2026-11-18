@@ -39,6 +39,17 @@ debug builds add `android:usesCleartextTraffic="true"` to `<application>`; **nev
 flutter build apk --release --dart-define=API_BASE_URL=https://api.example.com
 ```
 
+## Production backend
+
+The deployed production API is:
+
+```text
+https://mobile-app-development-pi.vercel.app
+```
+
+The app's default API URL is this HTTPS endpoint. An explicit `--dart-define` value
+can still override it for local development or another deployment.
+
 ## App flow
 1. Login (username + password) -> tokens saved in secure storage.
 2. The app downloads `/api/v1/model/schema` and **generates the form from it** (13 fields, units, ranges,
