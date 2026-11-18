@@ -1,0 +1,122 @@
+{
+  "model_name": "Polynomial Regression (degree 3)",
+  "target": {
+    "name": "RH",
+    "label": "Relative Humidity",
+    "unit": "%"
+  },
+  "features": [
+    "CO(GT)",
+    "PT08.S1(CO)",
+    "C6H6(GT)",
+    "PT08.S2(NMHC)",
+    "NOx(GT)",
+    "PT08.S3(NOx)",
+    "NO2(GT)",
+    "PT08.S4(NO2)",
+    "PT08.S5(O3)",
+    "T",
+    "Month",
+    "DayOfWeek",
+    "Hour"
+  ],
+  "training_ranges": {
+    "CO(GT)": {
+      "min": 0.1,
+      "max": 11.5,
+      "median": 1.8,
+      "missing_pct_in_training": 18.56
+    },
+    "PT08.S1(CO)": {
+      "min": 647.0,
+      "max": 2040.0,
+      "median": 1059.0,
+      "missing_pct_in_training": 0.0
+    },
+    "C6H6(GT)": {
+      "min": 0.1,
+      "max": 63.7,
+      "median": 8.1,
+      "missing_pct_in_training": 0.0
+    },
+    "PT08.S2(NMHC)": {
+      "min": 383.0,
+      "max": 2214.0,
+      "median": 905.0,
+      "missing_pct_in_training": 0.0
+    },
+    "NOx(GT)": {
+      "min": 2.0,
+      "max": 1389.0,
+      "median": 177.0,
+      "missing_pct_in_training": 17.84
+    },
+    "PT08.S3(NOx)": {
+      "min": 322.0,
+      "max": 2683.0,
+      "median": 808.0,
+      "missing_pct_in_training": 0.0
+    },
+    "NO2(GT)": {
+      "min": 2.0,
+      "max": 322.0,
+      "median": 109.0,
+      "missing_pct_in_training": 17.88
+    },
+    "PT08.S4(NO2)": {
+      "min": 551.0,
+      "max": 2775.0,
+      "median": 1462.0,
+      "missing_pct_in_training": 0.0
+    },
+    "PT08.S5(O3)": {
+      "min": 221.0,
+      "max": 2522.0,
+      "median": 954.5,
+      "missing_pct_in_training": 0.0
+    },
+    "T": {
+      "min": -1.9,
+      "max": 44.6,
+      "median": 17.8,
+      "missing_pct_in_training": 0.0
+    },
+    "Month": {
+      "min": 1.0,
+      "max": 12.0,
+      "median": 6.0,
+      "missing_pct_in_training": 0.0
+    },
+    "DayOfWeek": {
+      "min": 0.0,
+      "max": 6.0,
+      "median": 3.0,
+      "missing_pct_in_training": 0.0
+    },
+    "Hour": {
+      "min": 0.0,
+      "max": 23.0,
+      "median": 12.0,
+      "missing_pct_in_training": 0.0
+    }
+  },
+  "notebook_metrics_test": {
+    "mae": 2.3916,
+    "rmse": 3.2442,
+    "r2_test": 0.9658
+  },
+  "cv_r2_5fold": {
+    "mean": 0.9662,
+    "std": 0.002
+  },
+  "n_train": 7192,
+  "n_test": 1799,
+  "exported_at": "2026-11-18T08:54:45+00:00",
+  "versions": {
+    "python": "3.12.3",
+    "scikit-learn": "1.9.1",
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "joblib": "1.6.0"
+  }
+}

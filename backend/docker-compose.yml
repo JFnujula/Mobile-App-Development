@@ -1,0 +1,26 @@
+# API + Caddy (automatic HTTPS certificates). Set API_DOMAIN and the secrets in .env first.
+services:
+  api:
+    build: .
+    env_file: .env
+    environment:
+      ENVIRONMENT: production
+      ENFORCE_HTTPS: "true"
+      ENABLE_DOCS: "false"
+    volumes:
+      - api_data:/srv/data
+    restart: unless-stopped
+    expose: ["8000"]
+  caddy:
+    image: caddy:2
+    ports: ["80:80", "443:443"]
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on: [api]
+    restart: unless-stopped
+volumes:
+  api_data:
+  caddy_data:
